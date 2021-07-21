@@ -30,3 +30,17 @@ we can only do one type of image per folder
 ## maybe I need to remove all folders before I start work?
 
 ## Im not currently renaming the orignal image but whatever
+
+- loop through each format at a time, if known do it, if common list of known to not work .txt etc dont and ask about unknown files
+- create the html document to accompany at then end
+- drag and drop, but thats less of a proprity
+  - if one file then create a folder to hold the images after
+- have a quiet and verbouse readout
+- check if I have the webp and png compression algerithms on the system before running them or do they fail silently?
+- take pieces out into seperate files if I can. outside the loops things like name change
+- document the png compression
+- can I push the jpegs to jpeg mini? that was manual
+- maybe replace all . in short filenames before the extension and replace them with - this happens automatically in screenshots, doesnt seem to cause issues but it could
+- there was something about putting it in the dock but I cant remeber what it did and how
+- for png and webp does  it become a node thing?
+- if a file doesnt show an extension it gets it twice in the end, macs love not showing the extensions that are there

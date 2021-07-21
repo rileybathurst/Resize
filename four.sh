@@ -1,20 +1,41 @@
 # Resize all the images in a folder
 
+# Title block to quickly find the start of the readout
 printf "\e[32m-------------------------------\e[m\n"
 printf "\e[32mResize\e[m\n"
 printf "\e[32m-------------------------------\e[m\n"
 
+formats=()
+
 # REMOVE ALL SPACES FROM NAMES AND REPLACE WITH UNDERSCORES
-for oldname in *
-do
-  newname=`echo $oldname | sed -e 's/ /_/g'`
-  mv "$oldname" "$newname"
+# I dont remeber regex so I havent documented it
+for o in *; do
+  filename=`echo $o | sed -e 's/ /_/g'`
+  mv "$o" "$filename"
+
+  # we need the file extension to move images not folders
+  ext="${filename##*.}"
+  printf "the extension is \e[32m$ext\e[m\n"
+
+  # add all the extensions to the array
+  # 🚨 I dont want duplicates tho
+  formats+=("$ext")
+
+  shrt=${filename%.*} # I dont quite understand these substitions
+  printf "the extension is \e[33m$shrt\e[m\n"
+
+  touch $shrt.html
+  # then add all the base info in here
+  echo "<picture>" >> $shrt.html
+
+
 done
 
-# we need the file extension to move images not folders
-filename=$(basename "$newname")
-ext="${filename##*.}"
-printf "the extension is \e[32m$ext\e[m\n"
+# check the formats
+# 🚨 possibly prune the duplicates
+for l in "${formats[@]}"; do
+  echo "full array $l"
+done
 
 # set an array of the widths we want
 rs=(
@@ -23,7 +44,7 @@ rs=(
   '10'
 )
 
-# only run the loof if its worth it
+# only run the loop to create a folder with an image in it if its worth it
 # each size in the array is $i
 echo "start the rs loop"
 for i in "${rs[@]}"; do
@@ -32,7 +53,7 @@ for i in "${rs[@]}"; do
   # deal with each image as $j
   for j in *.$ext; do
       printf "  Starting on the image \e[33m$j\e[m\n"
-      
+
       pixelWidth=$(sips -g pixelWidth "$j" | awk '/pixelWidth:/{print $2}')
       printf "    This image is \e[35m$pixelWidth\e[m wide\n"
 
@@ -41,7 +62,7 @@ for i in "${rs[@]}"; do
       else
         printf "      \e[32mWere going on $i.\e[m\n"
 
-        # the p silently fails if we run the command twice, we shouldnt do this
+        # the p silently fails if we run the command twice shouldnt happen but does
         mkdir -p $i
 
         # move the images ($j) into the folder ($i)
@@ -52,16 +73,24 @@ for i in "${rs[@]}"; do
       printf "  Finishing on the image \e[34m$j\e[m for the size $i\n"
   done # finish with each image so we no longer have $j
 
+  printf "Finishing \e[31m$i\e[m\n"
+done # finish with each size
+
+# go into each folder and deal with the images
+for i in "${rs[@]}"; do
   # get into each folder only if it exists as we didnt make some
   if [[ -d $i ]]; then
-    cd $i # this gets into the problem sometimes there isnt a folder of that size
+    cd $i
 
-    printf "  were in each size only once this is\n"
+    pwd
 
+    # for each image (k) in each subfolder (*)
     for k in *; do # $k is the new image name
-      
+
+      echo "the images in this folder are $k"
+
       printf "\e[36mimage $k for the size $i\e[m\n"
-      # sips --resampleWidth $i $k
+      sips --resampleWidth $i $k # this prints a line to the terminal
 
       pixelHeight=$(sips -g pixelHeight "$k" | awk '/pixelHeight:/{print $2}')
 
@@ -73,11 +102,23 @@ for i in "${rs[@]}"; do
     done # Ive made the transforms
 
     cd ../
+
   fi # done with that folder
   rmdir $i
+done
 
-  printf "Finishing on the size \e[31m$i\e[m\n"
-done # finish with each size
+## add the file to the html list
+# for m in *; do
+  # echo $m >> $m-shortname.html
+  # 🚨 except now theres all the dimensions
+  # unless I specify something like its after a double dash
+  # and when converting the names I have removed all other double dashes
+# done
+
+# for n in *.html; do
+#   # echo "$n"
+#   echo ${"</picture>" >> $n}
+# done
 
 # I might need to download some stuff for this
 
@@ -95,3 +136,4 @@ done # finish with each size
 #     mv "$f" ${f//-fs8/};
 #   done
 # fi
+
