@@ -28,3 +28,5 @@ The -p flag will create nested directories, but only if they don't exist already
 we can only do one type of image per folder
 
 ## maybe I need to remove all folders before I start work?
+
+## Im not currently renaming the orignal image but whatever

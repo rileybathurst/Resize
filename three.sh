@@ -70,7 +70,6 @@ for i in "${rs[@]}"; do
 
       printf "\e[37mDone with that image\e[m\n"
 
-
     done # Ive made the transforms
 
     cd ../
@@ -79,3 +78,20 @@ for i in "${rs[@]}"; do
 
   printf "Finishing on the size \e[31m$i\e[m\n"
 done # finish with each size
+
+# I might need to download some stuff for this
+
+# CONVERT EVERYTHING TO WEBP
+# https://developers.google.com/speed/webp/docs/cwebp
+# https://www.smashingmagazine.com/2018/07/converting-images-to-webp/
+# find ./ -type f -name '*.$ext' | xargs -P 8 -I {} sh -c 'cwebp -af $1 -o "${1%.png}.webp"' _ {} \;
+
+# PNG
+# if [$ext = png]
+# then
+#   pngquant 256 *.png
+#   and remove the extension with f
+#   $ for f in *; do
+#     mv "$f" ${f//-fs8/};
+#   done
+# fi
