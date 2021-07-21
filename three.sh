@@ -1,5 +1,9 @@
 # Resize all the images in a folder
 
+printf "\e[32m-------------------------------\e[m\n"
+printf "\e[32mResize\e[m\n"
+printf "\e[32m-------------------------------\e[m\n"
+
 # REMOVE ALL SPACES FROM NAMES AND REPLACE WITH UNDERSCORES
 for oldname in *
 do
@@ -26,7 +30,7 @@ for i in "${rs[@]}"; do
   printf "Starting on the size \e[32m$i\e[m\n"
 
   # deal with each image as $j
-  for j in *; do
+  for j in *.$ext; do
       printf "  Starting on the image \e[33m$j\e[m\n"
       
       pixelWidth=$(sips -g pixelWidth "$j" | awk '/pixelWidth:/{print $2}')
@@ -37,14 +41,41 @@ for i in "${rs[@]}"; do
       else
         printf "      \e[32mWere going on $i.\e[m\n"
 
-        mkdir $i
+        # the p silently fails if we run the command twice, we shouldnt do this
+        mkdir -p $i
 
         # move the images ($j) into the folder ($i)
         cp $j $i
-      fi
 
-      printf "  Finishing on the image \e[34m$j\e[m\n"
-  done # finish with each image
+      fi # weve moved all the images we need to get back out now
+
+      printf "  Finishing on the image \e[34m$j\e[m for the size $i\n"
+  done # finish with each image so we no longer have $j
+
+  # get into each folder only if it exists as we didnt make some
+  if [[ -d $i ]]; then
+    cd $i # this gets into the problem sometimes there isnt a folder of that size
+
+    printf "  were in each size only once this is\n"
+
+    for k in *; do # $k is the new image name
+      
+      printf "\e[36mimage $k for the size $i\e[m\n"
+      sips --resampleWidth $i $k
+
+      pixelHeight=$(sips -g pixelHeight "$k" | awk '/pixelHeight:/{print $2}')
+
+      # this is going to have the extension twice
+      mv $k ../${k}-${i}x${pixelHeight}.$ext
+
+      printf "\e[37mDone with that image\e[m\n"
+
+
+    done # Ive made the transforms
+
+    cd ../
+  fi # done with that folder
+  rmdir $i
 
   printf "Finishing on the size \e[31m$i\e[m\n"
 done # finish with each size
