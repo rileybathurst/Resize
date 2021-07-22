@@ -44,3 +44,8 @@ we can only do one type of image per folder
 - there was something about putting it in the dock but I cant remeber what it did and how
 - for png and webp does  it become a node thing?
 - if a file doesnt show an extension it gets it twice in the end, macs love not showing the extensions that are there
+- I need the always show the extension
+- reset the variables to logical order I go up and down in the letters
+- if i dont like double dashes that much and I know how to make them and delete them I can just do that at the end? 🚨 except for when they are already in files?
+- should i also rename the original file to get a width x height? I can do a check with double dashes if i can figure out the pull them from files
+- auto generate the array of sizes by division or how much less each time, its doing all the work the more the better?

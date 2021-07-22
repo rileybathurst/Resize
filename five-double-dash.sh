@@ -1,5 +1,9 @@
 # Resize all the images in a folder
 
+# Im putting the dimensions behind a double dash -- so I can find them easier.
+# I dont love this and I can remove them but I'm adding them to the html files
+# so I need to learn to pull them from there as well
+
 # Title block to quickly find the start of the readout
 printf "\e[32m-------------------------------\e[m\n"
 printf "\e[32mResize\e[m\n"
@@ -28,7 +32,6 @@ for o in *; do
   # then add all the base info in here
   echo "<picture>" >> $shrt.html
 
-
 done
 
 # check the formats
@@ -38,6 +41,8 @@ for l in "${formats[@]}"; do
 done
 
 # set an array of the widths we want
+# I could also do something here with math biggest number divided by something etc
+# to auto generate the array
 rs=(
   '3840'
   '540'
@@ -96,22 +101,37 @@ for i in "${rs[@]}"; do
 
       # this maybe should but doesnt have the extension twice
       # i can always do the shortname tool again but its a propblem with hidden extensions
-      mv $k ../${k}-${i}x${pixelHeight}.$ext
+      short=${k%.*} # I dont quite understand these substitions
+      mv $k ../${short}--${i}x${pixelHeight}.$ext
 
       printf "\e[37mDone with that image\e[m\n"
 
     done # Ive made the transforms
 
     cd ../
+  rmdir $i
 
   fi # done with that folder
-  rmdir $i
 done
 
-# for o in *.ext; do
-#   echo "<img src='$o-longname'>" >> $o-shortname.html
-#   # 🚨 except it needs to be the name before the sizing
-# done
+# i need to give the original a height and width as or below I cant work off before the double dash
+for q in *.$ext; do
+  if [[ ${q%--*} == $q ]]; then # everything before the last double dash I just put in
+    shortName=${q%.*}
+    pixelWidth=$(sips -g pixelWidth "$q" | awk '/pixelWidth:/{print $2}')
+    pixelHeight=$(sips -g pixelHeight "$q" | awk '/pixelHeight:/{print $2}')
+    mv "$q" "${shortName}--${pixelWidth}x${pixelHeight}.${ext}"
+  fi
+done
+
+for r in *.$ext; do
+  # i might need to number these to get the previous for when to display etc
+  # that sounds like Im making an array
+  echo "r should be all the images $r"
+  less=${r%--*} # everything before the last double dash I just put in
+  echo "less is $less"
+  echo "<img src='$r'>" >> $less.html
+done
 
 for n in *.html; do
   # echo "$n"
